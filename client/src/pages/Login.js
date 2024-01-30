@@ -1,16 +1,25 @@
 import React from 'react'
-import { Form } from "antd";
+import { Form, message } from "antd";
 import Button from "../components/Button";
 import { Link } from "react-router-dom";
+import { LoginUser } from '../appicalls/users';
 
 
 const Login = () => {
+    const handleLogin = async (value) => {
+            const res = await LoginUser(value)
+            if (res.success) {
+                message.success(res.messege);
+            } else {
+                message.error(res.messege)
+            }
+    }
     return (
         <div className="flex justify-center h-screen items-center bg-primary">
             <div className="card p-3 w-400">
                 <h1 className="text-xl mb-1">Welcome Again! Please Login</h1>
                 <hr />
-                <Form layout="vertical" className="mt-1">
+                <Form layout="vertical" className="mt-1" onFinish={handleLogin}>
                     <Form.Item
                         label="Email"
                         name="email"
