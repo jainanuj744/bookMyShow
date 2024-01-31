@@ -1,15 +1,18 @@
 import React from 'react'
 import { Form, message } from "antd";
 import Button from "../components/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LoginUser } from '../appicalls/users';
 
 
 const Login = () => {
+    const navigate = useNavigate();
     const handleLogin = async (value) => {
             const res = await LoginUser(value)
             if (res.success) {
                 message.success(res.messege);
+                localStorage.setItem('token',res.token)
+                navigate('/')
             } else {
                 message.error(res.messege)
             }

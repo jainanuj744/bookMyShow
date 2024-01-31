@@ -4,6 +4,7 @@
 const router = require('express').Router();
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 router.post('/register',async (req,res)=>{
 
@@ -51,13 +52,13 @@ router.post('/login', async (req,res)=>{
         })
     }
 
-    return res.send({
+    const token = jwt.sign({userId:user._id},process.env.secret_key_jwt,{expiresIn:'1d'});
+    // console.log(token);
+    res.send({
         success:true,
-        messege:"User Logged In"
+        messege:"User Logged In",
+        token:token
     })
-
-
-
 })
     
 module.exports = router;
