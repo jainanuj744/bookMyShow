@@ -5,7 +5,7 @@ const router = require('express').Router();
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const authMiddleware = require('../middlewares/authMiddleware');
+const authmiddleware = require('../middlewares/authmiddleware');
 
 router.post('/register',async (req,res)=>{
 
@@ -14,7 +14,7 @@ router.post('/register',async (req,res)=>{
         if(userExists){
             return res.send({
                 success:"false",
-                messege:"User Already Exists"
+                message:"User Already Exists"
             });    
         }
 
@@ -28,7 +28,7 @@ router.post('/register',async (req,res)=>{
         await newUser.save();
         res.send({
             success:"true",
-            messege:"User Registered, Please Login"
+            message:"User Registered, Please Login"
         });
     }catch(err){
         console.log(err);
@@ -40,7 +40,7 @@ router.post('/login', async (req,res)=>{
     if(!user){
         return res.send({
             success:false,
-            messege:"User does not exist"
+            message:"User does not exist"
         })
     }
 
@@ -49,7 +49,7 @@ router.post('/login', async (req,res)=>{
     if(!validPassword){
         return res.send({
             success:false,
-            messege:"Invalid Password"
+            message:"Invalid Password"
         })
     }
 
@@ -57,16 +57,16 @@ router.post('/login', async (req,res)=>{
     // console.log(token);
     res.send({
         success:true,
-        messege:"User Logged In",
+        message:"User Logged In",
         token:token
     })
 })
 
-router.get("/get-current-user", authMiddleware, async (req,res)=>{
+router.get("/get-current-user", authmiddleware, async (req,res)=>{
     const user = await User.findById(req.body.userId).select('-password')
     res.send({
         success:true,
-        meassege:"You are allowed to go to protected route",
+        message:"You are allowed to go to protected route",
         data:user
     })
 })

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import Button from "../components/Button"
 import { Link, useNavigate } from 'react-router-dom'
 import { Form, message } from 'antd'
-import { RegisterUser } from '../appicalls/users'
+import { RegisterUser } from '../apicalls/users'
 
 
 const Register = () => {
@@ -11,9 +11,9 @@ const Register = () => {
         
         const res = await RegisterUser(value);
         if (res.success) {
-            message.success(res.messege);
+            message.success(res.message);
         } else {
-            message.error(res.messege)
+            message.error(res.message)
         }
     }
 

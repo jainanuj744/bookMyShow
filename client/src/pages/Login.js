@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Form, message } from "antd";
 import Button from "../components/Button";
 import { Link, useNavigate } from "react-router-dom";
-import { LoginUser } from '../appicalls/users';
+import { LoginUser } from '../apicalls/users';
 
 
 const Login = () => {
@@ -10,12 +10,12 @@ const Login = () => {
     const handleLogin = async (value) => {
             const res = await LoginUser(value)
             if (res.success) {
-                message.success(res.messege);
+                message.success(res.message);
                 localStorage.setItem('token',res.token)
                 // navigate('/')
                 window.location.href = '/'
             } else {
-                message.error(res.messege)
+                message.error(res.message)
             }
     }
 

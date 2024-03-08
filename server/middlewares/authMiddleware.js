@@ -13,7 +13,7 @@ module.exports = function(req,res,next){
     }catch(err){
         res.send({
             success:false,
-            messege:"Invalid Token"
+            message:"Invalid Token"
         })
     }
 }

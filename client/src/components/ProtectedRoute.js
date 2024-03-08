@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { GetCurrentUser } from "../appicalls/users";
+import { GetCurrentUser } from "../apicalls/users";
 import { HideLoading, ShowLoading } from "../redux/loadersSlice";
 import { SetUser } from '../redux/usersSlice';
 import { message } from 'antd';
