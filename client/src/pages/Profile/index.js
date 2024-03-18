@@ -5,7 +5,6 @@ import TheatresList from './TheatresList';
 function Profile(){
     return (
         <div>
-            Title
             <PageTitle title='Profile' />
             <Tabs>
                 <Tabs.TabPane tab="Bookings" key="1">

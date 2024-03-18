@@ -45,7 +45,7 @@ export const DeleteTheatre = async (payload)=>{
     }
 }
 
-// et all theatres
+// get all theatres
 
 export const GetAllTheatres = async() => {
     try{
@@ -53,5 +53,17 @@ export const GetAllTheatres = async() => {
         return response.data;
     }catch(err){
         return err.message
+    }
+}
+
+
+// add a show
+
+export const AddShow = async(payload) => {
+    try{
+        const response = await axiosInstance.post('/api/theatres/add-show',payload)
+        return response.data;
+    }catch(error){
+        return error.message;
     }
 }
