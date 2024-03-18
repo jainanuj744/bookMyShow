@@ -2,38 +2,84 @@ import { Col, Form, Modal, Row, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import Button from "../../components/Button";
 import { GetAllMovies } from "../../apicalls/movies";
-import { AddShow } from "../../apicalls/theatres";
+import {
+  AddShow,
+  DeleteShow,
+  GetAllShowsByTheatre,
+} from "../../apicalls/theatres";
+import moment from "moment";
+import { useDispatch } from "react-redux";
+import { HideLoading, ShowLoading } from "../../redux/loadersSlice";
 
 function Shows({ openShowsModal, setOpenShowsModal, theatre }) {
   let [view, setView] = useState("table");
   let [movies, setMovies] = useState([]);
+  let [shows, setShows] = useState([]);
+  const dispatch = useDispatch();
 
   const getData = async () => {
     try {
+      dispatch(ShowLoading());
       const moviesResponse = await GetAllMovies();
       if (moviesResponse.success) {
         setMovies(moviesResponse.data);
       } else {
         message.error(moviesResponse.message);
       }
+
+      const showsResponse = await GetAllShowsByTheatre({
+        theatreId: theatre._id,
+      });
+      if (showsResponse.success) {
+        setShows(showsResponse.data);
+      } else {
+        message.error(showsResponse.message);
+      }
+      dispatch(HideLoading());
     } catch (error) {
       message.error(error.message);
+      dispatch(HideLoading());
     }
   };
 
   const handleAddShow = async (values) => {
     try {
+      dispatch(ShowLoading());
       const response = await AddShow({
         ...values,
         theatre: theatre._id,
       });
       if (response.success) {
         message.success(response.message);
+        getData();
+        setView("table");
+        console.log("It's working");
       } else {
         message.error(response.message);
       }
+      dispatch(HideLoading());
     } catch (error) {
       message.error(error.message);
+      dispatch(HideLoading());
+    }
+  };
+
+  const handleDelete = async (showId) => {
+    try {
+      dispatch(ShowLoading());
+      const response = await DeleteShow({
+        showId: showId,
+      });
+      if (response.success) {
+        message.success(response.message);
+        getData();
+      } else {
+        message.error(response.message);
+      }
+      dispatch(HideLoading());
+    } catch (error) {
+      message.error(error.message);
+      dispatch(HideLoading());
     }
   };
 
@@ -46,7 +92,7 @@ function Shows({ openShowsModal, setOpenShowsModal, theatre }) {
       title: "Date",
       dataIndex: "date",
       render: (text, record) => {
-        // return moment(text).format("MMM Do YYYY");
+        return moment(text).format("MMM Do YYYY");
       },
     },
     {
@@ -84,9 +130,9 @@ function Shows({ openShowsModal, setOpenShowsModal, theatre }) {
             {record.bookedSeats.length === 0 && (
               <i
                 className="ri-delete-bin-line"
-                // onClick={() => {
-                //   handleDelete(record._id);
-                // }}
+                onClick={() => {
+                  handleDelete(record._id);
+                }}
               ></i>
             )}
           </div>
@@ -128,7 +174,7 @@ function Shows({ openShowsModal, setOpenShowsModal, theatre }) {
         }
       </div>
 
-      {view === "table" && <Table columns={columns} />}
+      {view === "table" && <Table columns={columns} dataSource={shows} />}
 
       {view === "form" && (
         <Form layout="vertical" onFinish={handleAddShow}>

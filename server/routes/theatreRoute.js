@@ -29,10 +29,10 @@ router.post("/get-all-theatre-by-owner", authmiddleware, async (req, res) => {
       message: "Theatre added",
       data: theatres,
     });
-  } catch (err) {
+  } catch (error) {
     res.send({
       success: false,
-      message: err.message,
+      message: error.message,
     });
   }
 });
@@ -81,10 +81,10 @@ router.get("/get-all-theatres", authmiddleware, async (req, res) => {
       message: "Theatres fetched",
       data: theatres,
     });
-  } catch (err) {
+  } catch (error) {
     res.send({
       success: false,
-      message: err.message,
+      message: error.message,
     });
   }
 });
@@ -98,6 +98,42 @@ router.post("/add-show", authmiddleware, async (req, res) => {
     res.send({
       success: false,
       message: "Show Added",
+    });
+  } catch (error) {
+    res.send({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// get shows based on theatre
+
+router.post("/get-all-shows-by-theatre", authmiddleware, async (req, res) => {
+  try {
+    const shows = await Show.find({ theatre: req.body.theatreId }).populate(
+      "movie"
+    );
+    res.send({
+      success: true,
+      message: "Shows Fetched",
+      data: shows,
+    });
+  } catch (error) {
+    res.send({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// delete a show
+router.post("/delete-show", authmiddleware, async (req, res) => {
+  try {
+    await Show.findByIdAndDelete(req.body.showId);
+    res.send({
+      success: true,
+      message: "Show Deleted Successfully",
     });
   } catch (error) {
     res.send({
