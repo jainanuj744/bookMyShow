@@ -5,6 +5,7 @@ import { GetAllMovies } from "../apicalls/movies";
 import { useDispatch } from "react-redux";
 import { HideLoading, ShowLoading } from "../redux/loadersSlice";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 export default function Home() {
   const [searchText, setSearchText] = useState("");
@@ -50,7 +51,11 @@ export default function Home() {
             <Col span={6}>
               <div
                 className="card flex flex-col gap-1 cursor-pointer"
-                onClick={() => navigate(`/movie/${movie._id}`)}
+                onClick={() =>
+                  navigate(
+                    `/movie/${movie._id}/?date=${moment().format("YYYY-MM-DD")}`
+                  )
+                }
               >
                 <img src={movie.poster} alt="" height={200} />
 

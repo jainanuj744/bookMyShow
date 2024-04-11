@@ -143,4 +143,40 @@ router.post("/delete-show", authmiddleware, async (req, res) => {
   }
 });
 
+// get all unique theatres which have shows of a movie
+
+router.post("/get-all-theatres-by-movie", authmiddleware, async (req, res) => {
+  try {
+    const { movie, date } = req.body;
+    // find all the shows of a movie on given date
+    const shows = await Show.find({ movie, date }).populate("theatre");
+    let uniqueTheatre = [];
+    shows.forEach((show) => {
+      const theatre = uniqueTheatre.find(
+        (theatre) => theatre._id == show.theatre._id
+      );
+      if (!theatre) {
+        const showsForThisTheatre = shows.filter(
+          (showObj) => showObj.theatre._id == show.theatre._id
+        );
+        uniqueTheatre.push({
+          ...show.theatre._doc,
+          shows: showsForThisTheatre,
+        });
+      }
+      console.log(uniqueTheatre);
+    });
+    res.send({
+      success: true,
+      message: "Success",
+      data: uniqueTheatre,
+    });
+  } catch (error) {
+    res.send({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
 module.exports = router;
