@@ -3,11 +3,17 @@ import { message } from "antd";
 import { useParams } from "react-router-dom";
 import { GetShowsById } from "../apicalls/theatres";
 import moment from "moment";
+import Button from "../components/Button";
+import StripeCheckout from "react-stripe-checkout";
+import { HideLoading, ShowLoading } from "../redux/loadersSlice";
+import { useDispatch } from "react-redux";
+import { MakePayment } from "../apicalls/bookings";
 
 export default function BookShow() {
   const [selectedSeats, setSelectedSeats] = useState([]);
   let [show, setShow] = useState();
   const params = useParams();
+  const dispatch = useDispatch();
   const getData = async () => {
     try {
       const response = await GetShowsById({ showId: params.id });
@@ -87,6 +93,28 @@ export default function BookShow() {
     );
   };
 
+  const onToken = async (token) => {
+    console.log(token);
+    try {
+      dispatch(ShowLoading());
+      const response = await MakePayment(
+        token,
+        selectedSeats.length * show.ticketPrice * 100
+      );
+      if (response.success) {
+        message.success(response.message);
+        console.log(response.data);
+        //  book(response.data);
+      } else {
+        message.error(response.message);
+      }
+      dispatch(HideLoading());
+    } catch (error) {
+      message.error(error.message);
+      dispatch(HideLoading());
+    }
+  };
+
   useEffect(() => {
     getData();
   }, []);
@@ -130,6 +158,14 @@ export default function BookShow() {
                 </h1>
               </div>
             </div>
+            <StripeCheckout
+              token={onToken}
+              amount={selectedSeats.length * show.ticketPrice * 100}
+              billingAddress
+              stripeKey="pk_test_51P5VPFSCfEeAFY0rpSkSlYquSQZxeVcH1f4NS5tJtcJbOwAwCXtgTXZyHXkHu7MYw8SA29sVjOxxt9kNMxCJ1xO0003Gxh3hVY"
+            >
+              <Button title="Book Now" />
+            </StripeCheckout>
           </div>
         )}
       </div>

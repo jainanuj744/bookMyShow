@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const authmiddleware = require("../middlewares/authmiddleware");
+const authmiddleware = require("../middlewares/authMiddleware");
 const Show = require("../models/showModel");
 const Theatre = require("../models/theatreModel");
 

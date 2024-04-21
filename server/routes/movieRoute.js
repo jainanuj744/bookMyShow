@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const authmiddleware = require("../middlewares/authmiddleware");
+const authmiddleware = require("../middlewares/authMiddleware");
 const Movie = require("../models/movieModel");
 
 //add a movie
